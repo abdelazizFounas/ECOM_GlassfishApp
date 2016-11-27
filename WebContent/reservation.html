@@ -1,0 +1,95 @@
+<div>
+  <!-- Page Heading -->
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">
+              Réservation
+          </h1>
+      </div>
+  </div>
+  <!-- /.row -->
+
+  <div class="row row-bootstrap">
+    <div class="col-lg-12 col-md-12">
+      <div class="">
+        <div class="col-lg-2 label-top">
+          <label>Mode de transport</label>
+        </div>
+        <div class="col-lg-10">
+          <md-button ng-click="selectTaxi()" class="md-raised {{classTaxi}}">Taxi</md-button>
+          <md-button ng-click="selectCovoiturage()" class="md-raised {{classCovoiturage}}">Covoiturage</md-button>
+        </div>
+      </div>
+      <div class="">
+        <div class="col-lg-2 label-top">
+          <label>Date de départ</label>
+        </div>
+        <div class="col-lg-10">
+          <p class="input-group">
+                  <input type="text" class="form-control" datetime-picker="dd/MM/yyyy HH:mm" ng-model="picker.date" is-open="picker.open" />
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="openCalendar($event)"><i class="fa fa-calendar"></i></button>
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="">
+        <div class="col-lg-2 label-top">
+          <label for="departure">Adresse de départ</label>
+        </div>
+        <div class="col-lg-10 row-bootstrap-inner">
+          <input id="departure" placeholder="Départ" type="text" class="form-control" name="departure" ng-model="departure">
+        </div>
+      </div>
+      <div class="">
+        <div class="col-lg-2 label-top">
+          <label for="arrival">Adresse d'arrivée</label>
+        </div>
+        <div class="col-lg-10">
+          <input id="arrival" placeholder="Arrivée" type="text" class="form-control" name="arrival" ng-model="arrival">
+        </div>
+      </div>
+      <div class="">
+        <div class="col-lg-2 label-top">
+          <md-button ng-disabled="connectionInfo.connected == false || departure === '' || arrival === ''" class="md-raised md-warn" ng-click="research()">Rechercher</md-button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /.row -->
+
+  <div ng-if="trips.length > 0" class="row row-bootstrap" flex>
+    <md-toolbar layout="row" class="md-hue-3">
+      <div class="md-toolbar-tools">
+        <span>Résultats</span>
+      </div>
+    </md-toolbar>
+
+    <md-content>
+      <md-list flex>
+        <md-subheader ng-if="modeTransport === 'taxi'" class="md-no-sticky">Le mode de transport choisi est Taxi</md-subheader>
+        <md-subheader ng-if="modeTransport === 'covoiturage'" class="md-no-sticky">Le mode de transport choisi est Covoiturage</md-subheader>
+        <md-list-item class="md-4-line" ng-repeat="trip in trips" ng-click="selectTrip($index)">
+          <div class="md-avatar">
+            {{$index+1}}
+          </div>
+          <div class="md-list-item-text" layout="column">
+            <h4>De : {{ trip.departure }}</h4>
+            <h4>À : {{ trip.arrival }}</h4>
+            <h5>Date et horaire : {{ trip.date }}</h5>
+            <p>Prix : {{ trip.price }} euros</p>
+          </div>
+        </md-list-item>
+      </md-list flex>
+    </md-content>
+  </div>
+
+  <div class="row row-bootstrap">
+    <div class="col-lg-12 col-md-12">
+      <ui-gmap-google-map control="map.control" center="map.center" zoom="map.zoom" draggable="true" options="options">
+        <ui-gmap-markers models="markers" coords="'self'" icon="'icon'" options="'options'"></ui-gmap-markers>
+      </ui-gmap-google-map>
+    </div>
+  </div>
+  <!-- /.row -->
+</div>

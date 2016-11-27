@@ -1,0 +1,36 @@
+<md-dialog aria-label="reservation" ng-cloak>
+
+    <form name="reservationForm" data-ng-submit="answer()">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Réserver un voyage</h2>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+              <div class="md-list-item-text" layout="column">
+                <h4>De : {{ trips[selectedTrip].departure }}</h4>
+                <h4>À : {{ trips[selectedTrip].arrival }}</h4>
+                <h5>Date et horaire : {{ trips[selectedTrip].date }}</h5>
+                <p>Prix : {{ trips[selectedTrip].price }} euros</p>
+              </div>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button type="submit" class="md-primary"
+                       aria-label="Reserver">
+                Réserver
+            </md-button>
+            <md-button type="button" ng-click="cancel()"
+                       aria-label="Annuler">
+                Annuler
+            </md-button>
+        </md-dialog-actions>
+
+    </form>
+
+</md-dialog>

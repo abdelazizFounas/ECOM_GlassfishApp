@@ -225,3 +225,38 @@ ul.alert-dropdown {
 .panel-yellow > a:hover {
     color: #df8a13;
 }
+
+.you_are_here {
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-right:5px;
+    padding-left:5px;
+    color:#000;
+    height:30px;
+    width:100px;
+    font-size:11px;
+    text-align: center;
+    background-color: white;
+    border-style: solid;
+    border-width: 3px;
+    border-color: red;
+    border-radius: 10px;
+}
+
+.angular-google-map-container { height: 400px; }
+
+.row-bootstrap{
+  padding-bottom: 20px !important;
+}
+
+.row-bootstrap-inner{
+  padding-bottom: 10px !important;
+}
+
+.label-top{
+  padding-top: 10px !important;
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
