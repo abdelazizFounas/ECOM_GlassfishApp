@@ -40,11 +40,38 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
       $mdDialog.cancel();
     };
 
-    $scope.answer = function(firstname, lastname, mail, password) {
+    $scope.answer = function(firstname, lastname, mail, password, birthday, address, city, zip, country, phone) {
       console.log(firstname +" "+ lastname  +" "+  mail +" "+ password);
+      console.log(birthday +" "+ address  +" "+  city +" "+ zip);
+      console.log(country +" "+ phone);
       $scope.connectionInfo.connected = true;
       $scope.connectionInfo.firstname = firstname;
       $scope.connectionInfo.lastname = lastname;
+
+      $http({
+        method: 'POST',
+        url: '/AutomaticAuto/api/connexion/newAccount',
+        data: {
+          address: address,
+          birthDate: birthday,
+          city: city,
+          country: country,
+          email: email,
+          firstName: firstname,
+          lastName: lastname,
+          passwdHash: password,
+          phone: phone,
+          zip: zip
+        }
+      }).then(function successCallback(response) {
+        console.log("NEW ACCOUNT");
+        console.log(response);
+        $mdDialog.hide();
+      }, function errorCallback(response) {
+        console.log("NO NEW ACCOUNT");
+        console.log(response);
+      });
+
       $mdDialog.hide();
     };
   }
@@ -69,12 +96,11 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
         }
       }).then(function successCallback(response) {
         console.log("CONNECTED");
-        $scope.connectionInfo.connected = true;
-        $scope.connectionInfo.firstname = username;
-        $scope.connectionInfo.lastname = 'ln';
+        console.log(response);
         $mdDialog.hide();
       }, function errorCallback(response) {
         console.log("NOT CONNECTED");
+        console.log(response);
       });
     };
   }

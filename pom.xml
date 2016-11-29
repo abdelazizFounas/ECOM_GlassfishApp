@@ -113,6 +113,12 @@
         <artifactId>metrics-influxdb</artifactId>
         <version>0.9.3</version>
     </dependency>
+    
+    <dependency>
+        <groupId>ecomEJB</groupId>
+        <artifactId>ecomEJB</artifactId>
+        <version>0.0.1</version>
+    </dependency>
 	
   </dependencies>
 
