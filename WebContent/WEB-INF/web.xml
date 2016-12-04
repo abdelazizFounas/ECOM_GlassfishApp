@@ -21,7 +21,7 @@
       <param-value>
                 io.swagger.jaxrs.listing,
                 com.ricm.websiteproject
-            </param-value>
+      </param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>

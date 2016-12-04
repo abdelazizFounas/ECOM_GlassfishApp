@@ -5,6 +5,13 @@
 ecom_app = angular.module('ecomapp', ['ngRoute','uiGmapgoogle-maps','ui.bootstrap','ui.bootstrap.datetimepicker','ngMaterial']);
 
 ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDialog) {
+  $scope.myDate = new Date();
+
+  $scope.maxDate = new Date(
+      $scope.myDate.getFullYear()-18,
+      $scope.myDate.getMonth(),
+      $scope.myDate.getDate());
+
   $scope.connect = function(ev) {
     $mdDialog.show({
       controller: LoginDialogController,
@@ -44,9 +51,6 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
       console.log(firstname +" "+ lastname  +" "+  mail +" "+ password);
       console.log(birthday +" "+ address  +" "+  city +" "+ zip);
       console.log(country +" "+ phone);
-      $scope.connectionInfo.connected = true;
-      $scope.connectionInfo.firstname = firstname;
-      $scope.connectionInfo.lastname = lastname;
 
       $http({
         method: 'POST',
@@ -56,7 +60,7 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
           birthDate: birthday,
           city: city,
           country: country,
-          email: email,
+          email: mail,
           firstName: firstname,
           lastName: lastname,
           passwdHash: password,
@@ -66,6 +70,9 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
       }).then(function successCallback(response) {
         console.log("NEW ACCOUNT");
         console.log(response);
+        $scope.connectionInfo.connected = true;
+        $scope.connectionInfo.firstname = firstname;
+        $scope.connectionInfo.lastname = lastname;
         $mdDialog.hide();
       }, function errorCallback(response) {
         console.log("NO NEW ACCOUNT");
@@ -97,6 +104,9 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
       }).then(function successCallback(response) {
         console.log("CONNECTED");
         console.log(response);
+        $scope.connectionInfo.connected = true;
+        $scope.connectionInfo.firstname = response.data.firstName;
+        $scope.connectionInfo.lastname = response.data.lastName;
         $mdDialog.hide();
       }, function errorCallback(response) {
         console.log("NOT CONNECTED");
@@ -109,14 +119,19 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
     connected: false
   };
 
-  $scope.connecter = function(e){
-    $scope.connectionInfo.connected = true;
-    $scope.connectionInfo.firstname = "Abdelaziz";
-    $scope.connectionInfo.lastname = "Founas";
-  };
-
   $scope.disconnect = function(e){
     $scope.connectionInfo.connected = false;
+
+    $http({
+      method: 'GET',
+      url: '/AutomaticAuto/api/connexion/deconnexion'
+    }).then(function successCallback(response) {
+      console.log("DISCONNECTED");
+      console.log(response);
+    }, function errorCallback(response) {
+      console.log("DISCONNECTED");
+      console.log(response);
+    });
   };
 
   $scope.reservation = function(){
@@ -180,6 +195,21 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
      else if(pgurl == "about"){
        $scope.about();
      }
+
+     $http({
+       method: 'GET',
+       url: '/AutomaticAuto/api/connexion/checkConnexion'
+     }).then(function successCallback(response) {
+       console.log("CONNECTED");
+       console.log(response);
+       $scope.connectionInfo.connected = true;
+       $scope.connectionInfo.firstname = response.data.firstName;
+       $scope.connectionInfo.lastname = response.data.lastName;
+       $mdDialog.hide();
+     }, function errorCallback(response) {
+       console.log("NOT CONNECTED");
+       console.log(response);
+     });
 
      $scope.$on( "$routeChangeStart", function(event, next, current) {
        if ( $scope.connectionInfo.connected == false ) {
