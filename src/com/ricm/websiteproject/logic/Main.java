@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import javax.servlet.ServletContextEvent;
 
-import com.ricm.websiteproject.beans.Customer;
+import com.ricm.websiteproject.beans.CarpoolingInfo;
 import com.ricm.websiteproject.beans.Voiture;
 
 public class Main implements javax.servlet.ServletContextListener {
@@ -18,7 +18,7 @@ public class Main implements javax.servlet.ServletContextListener {
 		System.out.println("DEBUT MAIN");
 
 		StaticClass.alVoitures = new ArrayList<Voiture>();
-		StaticClass.alCustomers = new ArrayList<Customer>();
+		StaticClass.alCustomers = new ArrayList<CarpoolingInfo>();
 
 		System.out.println("FIN MAIN");
 	}

@@ -20,10 +20,12 @@ import javax.ws.rs.core.Response.Status;
 
 import com.codahale.metrics.annotation.Timed;
 import com.ricm.websiteproject.beans.AccountInfo;
+import com.ricm.websiteproject.beans.UserBean;
 
 import ecom.entities.User;
 import ecom.session.Connexion;
 import ecom.session.ConnexionBean;
+import ecom.session.WayFinder;
 
 @Path("/connexion")
 @Api(value = "/connexion")
@@ -31,6 +33,9 @@ public class ConnexionRest {
 
 	@EJB
 	private ConnexionBean connexionBean = new ConnexionBean();
+
+	@EJB
+	private WayFinder wayFinder = new WayFinder();
 
 	@GET
 	@Path("/checkConnexion")
@@ -45,7 +50,8 @@ public class ConnexionRest {
 		Connexion co = (Connexion) hs.getAttribute("connexion");
 
 		if (co != null && co.getConnected()) {
-			return Response.ok(co.getUser()).status(Status.ACCEPTED).build();
+			return Response.ok(new UserBean(co.getUser()))
+					.status(Status.ACCEPTED).build();
 		} else {
 			return Response.status(Status.NOT_FOUND).build();
 		}
@@ -66,13 +72,14 @@ public class ConnexionRest {
 		HttpSession hs = request.getSession(true);
 		System.out.println("CONNEXION DE : " + ai.getMail() + " et : "
 				+ ai.getPwd());
+
 		try {
 			User u = connexionBean.ConnectClient(ai.getMail(), ai.getPwd());
 
 			System.out.println("IS CONNECTED");
 			hs.setAttribute("connexion", new Connexion(u));
 
-			return Response.ok(u).status(Status.ACCEPTED).build();
+			return Response.ok(new UserBean(u)).status(Status.ACCEPTED).build();
 		} catch (Exception e) {
 			System.out.println("IS NOT CONNECTED");
 			return Response.status(Status.NOT_FOUND).build();
@@ -94,8 +101,9 @@ public class ConnexionRest {
 
 		if (co != null && co.getConnected()) {
 			co.clientDisconnect();
-			hs.invalidate();
 		}
+
+		hs.invalidate();
 
 		return Response.ok().build();
 	}
@@ -128,7 +136,8 @@ public class ConnexionRest {
 			System.out.println("IS NEW CONNECTED");
 			hs.setAttribute("connexion", new Connexion(ures));
 
-			return Response.ok(ures).status(Status.ACCEPTED).build();
+			return Response.ok(new UserBean(ures)).status(Status.ACCEPTED)
+					.build();
 		} else {
 			System.out.println("IS NOT NEW CONNECTED");
 			return Response.status(Status.NOT_FOUND).build();

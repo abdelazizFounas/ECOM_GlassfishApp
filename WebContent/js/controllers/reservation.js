@@ -1,39 +1,6 @@
 /*
  * Ecom
- function distance(lat_a, lon_a, lat_b, lon_b)
-{
-a = Math.PI / 180;
-lat1 = lat_a * a;
-lat2 = lat_b * a;
-lon1 = lon_a * a;
-lon2 = lon_b * a;
-
-t1 = Math.sin(lat1) * Math.sin(lat2);
-t2 = Math.cos(lat1) * Math.cos(lat2);
-t3 = Math.cos(lon1 - lon2);
-t4 = t2 * t3;
-t5 = t1 + t4;
-rad_dist = Math.atan(-t5/Math.sqrt(-t5 * t5 +1)) + 2 * Math.atan(1);
-
-return (rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446;
-}
-
-private double gps2m(float lat_a, float lng_a, float lat_b, float lng_b) {
-    float pk = (float) (180/3.14169);
-
-    float a1 = lat_a / pk;
-    float a2 = lng_a / pk;
-    float b1 = lat_b / pk;
-    float b2 = lng_b / pk;
-
-    float t1 = FloatMath.cos(a1)*FloatMath.cos(a2)*FloatMath.cos(b1)*FloatMath.cos(b2);
-    float t2 = FloatMath.cos(a1)*FloatMath.sin(a2)*FloatMath.cos(b1)*FloatMath.sin(b2);
-    float t3 = FloatMath.sin(a1)*FloatMath.sin(b1);
-    double tt = Math.acos(t1 + t2 + t3);
-
-    return 6366000*tt;
-}
-http://maps.google.com/maps/api/geocode/json?address=196 avenue de la republique loriol
+https://maps.google.com/maps/api/geocode/json?address=196 avenue de la republique loriol
  */
 
 ecom_app = angular.module('ecomapp');
@@ -106,9 +73,16 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
   // instantiate google map objects for directions
   $scope.directionsService = null;
   $scope.directionsDisplay = null;
-  $scope.directions = null;
+  $scope.directions = {};
 
   $scope.selectedTrip = 0;
+
+  $scope.selectedDate = null;
+
+  $scope.selectedArrival = "";
+  $scope.selectedDeparture = "";
+
+  $scope.tripInfo = {};
 
   $scope.selectTrip = function (index) {
     $scope.selectedTrip = index;
@@ -133,13 +107,86 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
     };
 
     $scope.answer = function() {
-
-      $mdDialog.hide();
+      if($scope.modeTransport === "covoiturage"){
+        $http({
+          method: 'POST',
+          url: '/AutomaticAuto/api/way/reserveCarpoolingWay',
+          data: {
+            departure: $scope.selectedDate,
+            predefinedJourneyId: $scope.trips[$scope.selectedTrip].id
+          }
+        }).then(function successCallback(response) {
+          if(response.data.taxiPresent){
+            $mdDialog.hide();
+          }
+          else{
+            console.log("NO CARPOOLING RESERVATION");
+          }
+        }, function errorCallback(response) {
+          console.log("NO CARPOOLING RESERVATION");
+          console.log(response);
+        });
+      }
+      else{
+        $http({
+          url: 'https://maps.google.com/maps/api/geocode/json',
+          params: {
+            sensor  : false,
+            address : $scope.selectedDeparture
+          }
+        }).then(function successCallback(response) {
+          $scope.tripInfo.latdu = response.data.results[0].geometry.location.lat;
+          $scope.tripInfo.londu = response.data.results[0].geometry.location.lng;
+          $http({
+            url: 'https://maps.google.com/maps/api/geocode/json',
+            params: {
+              sensor  : false,
+              address : $scope.selectedArrival
+            }
+          }).then(function successCallback(response) {
+            $scope.tripInfo.latau = response.data.results[0].geometry.location.lat;
+            $scope.tripInfo.lonau = response.data.results[0].geometry.location.lng;
+            $http({
+              method: 'POST',
+              url: '/AutomaticAuto/api/way/reserveTaxi',
+              data: {
+                arrivalCity: $scope.selectedArrival,
+                arrivalLocation: $scope.tripInfo.latau+";"+$scope.tripInfo.lonau,
+                departureCity: $scope.selectedDeparture,
+                departureLocation: $scope.tripInfo.latdu+";"+$scope.tripInfo.londu,
+                departureDateTime: $scope.selectedDate,
+                duration: $scope.directions.TotalDuration,
+                price: 2*$scope.directions.TotalDistance
+              }
+            }).then(function successCallback(response) {
+              if(response.data.taxiPresent){
+                $mdDialog.hide();
+              }
+              else{
+                console.log("NO TAXI RESERVATION");
+              }
+            }, function errorCallback(response) {
+              console.log("NO TAXI RESERVATION");
+              console.log(response);
+            });
+          }, function errorCallback(response) {
+            console.log("NO TAXI RESERVATION");
+            console.log(response);
+          });
+        }, function errorCallback(response) {
+          console.log("NO TAXI RESERVATION");
+          console.log(response);
+        });
+      }
     };
   }
 
   // get directions using google maps api
   $scope.research = function () {
+    $scope.selectedArrival = $scope.arrival;
+    $scope.selectedDeparture = $scope.departure;
+    $scope.selectedDate = $scope.picker.date;
+    $scope.trips = "pending";
     uiGmapIsReady.promise().then(function (maps) {
       //if we initialize directionsDisplay in every call, then we will have the issue with the previous route not cleared.
       // use this and the logic below to setMap to null and directionsDisplay to null.
@@ -168,6 +215,67 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
 
       $scope.DisplayDrivingDirections();
     });
+
+    if($scope.classCovoiturage === "md-primary"){
+      $scope.modeTransport = "covoiturage";
+      $http({
+        url: 'https://maps.google.com/maps/api/geocode/json',
+        params: {
+          sensor  : false,
+          address : $scope.departure
+        }
+      }).then(function successCallback(response) {
+        $scope.tripInfo.latdu = response.data.results[0].geometry.location.lat;
+        $scope.tripInfo.londu = response.data.results[0].geometry.location.lng;
+        $http({
+          url: 'https://maps.google.com/maps/api/geocode/json',
+          params: {
+            sensor  : false,
+            address : $scope.arrival
+          }
+        }).then(function successCallback(response) {
+          $scope.tripInfo.latau = response.data.results[0].geometry.location.lat;
+          $scope.tripInfo.lonau = response.data.results[0].geometry.location.lng;
+          $http({
+            method: 'POST',
+            url: '/AutomaticAuto/api/way/getCarpoolingWays',
+            data: {
+              departure: $scope.picker.date,
+              latdu: $scope.tripInfo.latdu,
+              londu: $scope.tripInfo.londu,
+              latau: $scope.tripInfo.latau,
+              lonau: $scope.tripInfo.lonau
+            }
+          }).then(function successCallback(response) {
+            console.log("CARPOOLING");
+            console.log(response);
+
+            if(response.data.arrayPredefinedJourneyBean.length > 0){
+              for (var i = 0; i < response.data.arrayPredefinedJourneyBean.length; i++) {
+                response.data.arrayPredefinedJourneyBean[i].date = $scope.picker.date.getDate() + "/" + ($scope.picker.date.getMonth()+1) + "/" + $scope.picker.date.getFullYear() + " à " +  response.data.arrayPredefinedJourneyBean[i].departureTime;
+              }
+
+              $scope.trips = response.data.arrayPredefinedJourneyBean;
+            }
+            else{
+              $scope.trips = "nothing";
+            }
+          }, function errorCallback(response) {
+            $scope.trips = "nothing";
+            console.log("NO CARPOOLING");
+            console.log(response);
+          });
+        }, function errorCallback(response) {
+          $scope.trips = "nothing";
+          console.log("NO CARPOOLING");
+          console.log(response);
+        });
+      }, function errorCallback(response) {
+        $scope.trips = "nothing";
+        console.log("NO CARPOOLING");
+        console.log(response);
+      });
+    }
   }
 
   $scope.DisplayDrivingDirections = function (){
@@ -215,49 +323,50 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
           });
         }
 
-        directions.TotalDuration = secondsToTime(totalDuration);
+        directions.TotalDuration = secondsToMinute(totalDuration);
         $scope.directions = directions;
         console.log($scope.directions);
+
+        if($scope.classTaxi === "md-primary"){
+          $scope.modeTransport = "taxi";
+          $http({
+            method: 'POST',
+            url: '/AutomaticAuto/api/way/taxiAvailable',
+            data: {
+              departure: $scope.picker.date,
+              duration: $scope.directions.TotalDuration
+            }
+          }).then(function successCallback(response) {
+            console.log("TAXI");
+            console.log(response);
+            if(response.data.taxiPresent){
+              $scope.trips = [{
+                departureCity: $scope.departure,
+                arrivalCity: $scope.arrival,
+                date: $scope.picker.date.getDate() + "/" + ($scope.picker.date.getMonth()+1) + "/" + $scope.picker.date.getFullYear() + " à " +  $scope.picker.date.getHours() + ":"+  $scope.picker.date.getMinutes() + ":"+  $scope.picker.date.getSeconds(),
+                price: 2*$scope.directions.TotalDistance
+              }];
+            }
+            else{
+              $scope.trips = "nothing";
+            }
+          }, function errorCallback(response) {
+            $scope.trips = "nothing";
+            console.log("NO TAXI");
+            console.log(response);
+          });
+        }
       }
     });
   }
 
-  function secondsToTime(totalDuration) {
-    var hours   = Math.floor(totalDuration / 3600);
-    var minutes = Math.floor((totalDuration - (hours * 3600)) / 60);
-    var seconds = totalDuration - (hours * 3600) - (minutes * 60);
-
-    if (hours   < 10) {hours   = "0"+hours;}
-    if (minutes < 10) {minutes = "0"+minutes;}
-    if (seconds < 10) {seconds = "0"+seconds;}
-    return hours+':'+minutes+':'+seconds;
+  function secondsToMinute(totalDuration) {
+    return ""+(totalDuration/60);
   };
 
   $scope.modeTransport = "taxi";
 
-  $scope.trips = [
-    {
-      departure: "Loriol 1",
-      arrival: "Lyon 1",
-      date: "Lundi 03/12/2016 à 12:30",
-      price: "300"
-    },{
-      departure: "Loriol 2",
-      arrival: "Lyon 2",
-      date: "Lundi 03/12/2016 à 12:30",
-      price: "350"
-    },{
-      departure: "Loriol 3",
-      arrival: "Lyon 3",
-      date: "Lundi 03/12/2016 à 12:30",
-      price: "400"
-    },{
-      departure: "Loriol 4",
-      arrival: "Lyon 4",
-      date: "Lundi 03/12/2016 à 12:30",
-      price: "500"
-    }
-  ];
+  $scope.trips = "";
 
   $scope.classTaxi = "md-primary";
   $scope.classCovoiturage = "";
@@ -265,30 +374,11 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
   $scope.selectTaxi = function() {
     $scope.classTaxi = "md-primary";
     $scope.classCovoiturage = "";
-    $scope.trips = [];
   };
 
   $scope.selectCovoiturage = function() {
     $scope.classTaxi = "";
     $scope.classCovoiturage = "md-primary";
-    $scope.trips = [
-      {
-        departure: "Loriol 1",
-        arrival: "Lyon 1",
-        date: "Lundi 03/12/2016 à 12:30",
-        price: "300"
-      },{
-        departure: "Loriol 2",
-        arrival: "Lyon 2",
-        date: "Lundi 03/12/2016 à 12:30",
-        price: "350"
-      },{
-        departure: "Loriol 3",
-        arrival: "Lyon 3",
-        date: "Lundi 03/12/2016 à 12:30",
-        price: "400"
-      }
-    ];
   };
 
   $scope.picker = {
