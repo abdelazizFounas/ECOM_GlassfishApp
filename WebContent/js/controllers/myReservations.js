@@ -25,6 +25,7 @@ ecom_app.controller("controllerMyReservations", function ($scope, $http, $compil
 
        $scope.tripsCarpooling = response.data.arrayCarpoolingReservationBean;
      }, function errorCallback(response) {
+       $scope.tripsCarpooling = [];
        console.log(response);
      });
 
@@ -42,6 +43,7 @@ ecom_app.controller("controllerMyReservations", function ($scope, $http, $compil
 
        $scope.tripsTaxi = response.data.arrayTaxiReservationBean;
      }, function errorCallback(response) {
+       $scope.tripsTaxi = [];
        console.log(response);
      });
   });

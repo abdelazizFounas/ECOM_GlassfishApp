@@ -132,6 +132,15 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
       console.log("DISCONNECTED");
       console.log(response);
     });
+
+    var pgurl = window.location.href.substr(window.location.href.lastIndexOf("/")+1);
+
+    if(pgurl == "myReservations"){
+      $location.path("/reservation");
+    }
+    else if(pgurl == "preferences"){
+      $location.path("/reservation");
+    }
   };
 
   $scope.reservation = function(){
@@ -205,7 +214,6 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
        $scope.connectionInfo.connected = true;
        $scope.connectionInfo.firstname = response.data.firstName;
        $scope.connectionInfo.lastname = response.data.lastName;
-       $mdDialog.hide();
      }, function errorCallback(response) {
        console.log("NOT CONNECTED");
        console.log(response);

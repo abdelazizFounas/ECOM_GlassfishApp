@@ -19,6 +19,7 @@ public class Main implements javax.servlet.ServletContextListener {
 
 		StaticClass.alVoitures = new ArrayList<Voiture>();
 		StaticClass.alCustomers = new ArrayList<CarpoolingInfo>();
+		StaticClass.main = "main";
 
 		System.out.println("FIN MAIN");
 	}

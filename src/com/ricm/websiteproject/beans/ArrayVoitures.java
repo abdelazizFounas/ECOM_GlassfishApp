@@ -10,5 +10,4 @@ public class ArrayVoitures {
 	public void setArrayVoitures(Voiture[] arrayVoitures) {
 		this.arrayVoitures = arrayVoitures;
 	}
-
 }

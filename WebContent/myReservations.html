@@ -22,13 +22,13 @@
         </div>
       </md-toolbar>
 
-      <md-toolbar ng-if="tripsTaxi.length > 0" layout="row" class="md-hue-3">
+      <md-toolbar ng-if="tripsTaxi.length > 0 && tripsTaxi !== 'pending'" layout="row" class="md-hue-3">
         <div class="md-toolbar-tools">
           <span>Les réservations en taxi</span>
         </div>
       </md-toolbar>
 
-      <md-content ng-if="tripsTaxi.length > 0">
+      <md-content ng-if="tripsTaxi.length > 0 && tripsTaxi !== 'pending'">
         <md-list flex>
           <md-list-item class="md-5-line" ng-repeat="tripTaxi in tripsTaxi">
             <md-divider></md-divider>
@@ -62,13 +62,13 @@
         </div>
       </md-toolbar>
 
-      <md-toolbar ng-if="tripsCarpooling.length > 0" layout="row" class="md-hue-3">
+      <md-toolbar ng-if="tripsCarpooling.length > 0 && tripsCarpooling !== 'pending'" layout="row" class="md-hue-3">
         <div class="md-toolbar-tools">
           <span>Les réservations en covoiturage</span>
         </div>
       </md-toolbar>
 
-      <md-content ng-if="tripsCarpooling.length > 0">
+      <md-content ng-if="tripsCarpooling.length > 0 && tripsCarpooling !== 'pending'">
         <md-list flex>
           <md-list-item class="md-5-line" ng-repeat="tripCarpooling in tripsCarpooling">
             <md-divider></md-divider>

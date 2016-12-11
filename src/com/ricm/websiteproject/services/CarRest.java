@@ -25,6 +25,7 @@ import com.ricm.websiteproject.logic.StaticClass;
 @Api(value = "/voitures")
 @RequestScoped
 public class CarRest {
+
 	@POST
 	@Path("/add")
 	@Timed(name = "addTaxi")
@@ -79,4 +80,5 @@ public class CarRest {
 
 		return res;
 	}
+
 }

@@ -81,6 +81,7 @@ public class ConnexionRest {
 
 			return Response.ok(new UserBean(u)).status(Status.ACCEPTED).build();
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("IS NOT CONNECTED");
 			return Response.status(Status.NOT_FOUND).build();
 		}

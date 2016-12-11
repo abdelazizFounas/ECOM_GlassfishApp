@@ -8,4 +8,5 @@ import com.ricm.websiteproject.beans.Voiture;
 public class StaticClass {
 	public static ArrayList<CarpoolingInfo> alCustomers;
 	public static ArrayList<Voiture> alVoitures;
+	public static String main = "main";
 }
