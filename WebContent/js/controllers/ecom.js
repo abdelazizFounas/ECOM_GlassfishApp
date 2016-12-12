@@ -4,7 +4,11 @@
 
 ecom_app = angular.module('ecomapp', ['ngRoute','uiGmapgoogle-maps','ui.bootstrap','ui.bootstrap.datetimepicker','ngMaterial', 'angular-growl']);
 
-ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDialog, growl) {
+ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDialog, growl, $document) {
+  $document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+  });
+
   $scope.myDate = new Date();
 
   $scope.maxDate = new Date(
