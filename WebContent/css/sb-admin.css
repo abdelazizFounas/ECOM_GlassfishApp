@@ -262,11 +262,11 @@ ul.alert-dropdown {
 }
 
 body {
-  padding-top: 0px;
+  padding-top: 60px !important;
 }
 @media (min-width:768px) {
   body {
-    padding-top: 60px !important;
+    padding-top: 0px !important;
   }
 }
 
