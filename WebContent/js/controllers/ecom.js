@@ -22,7 +22,7 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
       scope: this,
       preserveScope: true,
       templateUrl: 'login-dialog.html',
-      parent: angular.element(document),
+      parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
       fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
@@ -35,7 +35,7 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
       scope: this,
       preserveScope: true,
       templateUrl: 'create-dialog.html',
-      parent: angular.element(document),
+      parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
       fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
