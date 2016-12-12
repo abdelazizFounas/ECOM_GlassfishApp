@@ -4,7 +4,7 @@
 
 ecom_app = angular.module('ecomapp');
 
-ecom_app.controller("controllerPreferences", function ($scope, $http, $compile) {
+ecom_app.controller("controllerPreferences", function ($scope, $http, $compile, growl) {
   $scope.preferences();
 
   $scope.user = {};
@@ -47,9 +47,11 @@ ecom_app.controller("controllerPreferences", function ($scope, $http, $compile) 
       if(response.data.taxiPresent){
         $scope.user.email = $scope.mail;
         $scope.pwd1 = "";
+        growl.success("Mail modifié avec succès.",{title: 'Succès !', ttl: 2000});
       }
       else{
         $scope.mail = $scope.user.email;
+        growl.error("Mail non modifié.",{title: 'Erreur !', ttl: 2000});
       }
     }, function errorCallback(response) {
       console.log(response);
@@ -69,9 +71,11 @@ ecom_app.controller("controllerPreferences", function ($scope, $http, $compile) 
       if(response.data.taxiPresent){
         $scope.user.phone = $scope.phone;
         $scope.pwd2 = "";
+        growl.success("Téléphone modifié avec succès.",{title: 'Succès !', ttl: 2000});
       }
       else{
         $scope.phone = $scope.user.phone;
+        growl.error("Téléphone non modifié.",{title: 'Erreur !', ttl: 2000});
       }
     }, function errorCallback(response) {
       console.log(response);
@@ -92,9 +96,11 @@ ecom_app.controller("controllerPreferences", function ($scope, $http, $compile) 
         $scope.newpwd1 = "";
         $scope.newpwd2 = "";
         $scope.pwd3 = "";
+        growl.success("Mot de passe modifié avec succès.",{title: 'Succès !', ttl: 2000});
       }
       else{
         $scope.pwd3 = "";
+        growl.error("Mot de passe non modifié.",{title: 'Erreur !', ttl: 2000});
       }
     }, function errorCallback(response) {
       console.log(response);
