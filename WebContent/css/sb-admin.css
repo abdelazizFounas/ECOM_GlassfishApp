@@ -260,3 +260,11 @@ ul.alert-dropdown {
 .pointer:hover {
   cursor: pointer;
 }
+
+body {
+  padding-top: 70px;
+}
+
+.md-dialog-content {
+  z-index: 1000;
+}
