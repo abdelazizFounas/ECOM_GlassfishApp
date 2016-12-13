@@ -156,7 +156,7 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
                 departureLocation: $scope.tripInfo.latdu+";"+$scope.tripInfo.londu,
                 departureDateTime: $scope.selectedDate,
                 duration: $scope.directions.TotalDuration,
-                price: 2*$scope.directions.TotalDistance
+                price: $scope.trips[0].price
               }
             }).then(function successCallback(response) {
               if(response.data.taxiPresent){
@@ -345,7 +345,7 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
                 departureCity: $scope.departure,
                 arrivalCity: $scope.arrival,
                 date: $scope.picker.date.getDate() + "/" + ($scope.picker.date.getMonth()+1) + "/" + $scope.picker.date.getFullYear() + " à " +  $scope.picker.date.getHours() + ":"+  $scope.picker.date.getMinutes() + ":"+  $scope.picker.date.getSeconds(),
-                price: 0.80*$scope.directions.TotalDistance
+                price: Math.round($scope.directions.TotalDistance*80)/100
               }];
             }
             else{
@@ -357,11 +357,11 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
             console.log(response);
           });
         }
+      } else {
+        $scope.trips = "nothing";
+        console.log("NO TAXI");
+        console.log(response);
       }
-    }, function (response, status) {
-      $scope.trips = "nothing";
-      console.log("NO TAXI");
-      console.log(response);
     });
   }
 
