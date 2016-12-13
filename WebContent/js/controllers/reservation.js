@@ -183,10 +183,11 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
 
   // get directions using google maps api
   $scope.research = function () {
+    $scope.trips = "pending";
     $scope.selectedArrival = $scope.arrival;
     $scope.selectedDeparture = $scope.departure;
     $scope.selectedDate = $scope.picker.date;
-    $scope.trips = "pending";
+
     uiGmapIsReady.promise().then(function (maps) {
       //if we initialize directionsDisplay in every call, then we will have the issue with the previous route not cleared.
       // use this and the logic below to setMap to null and directionsDisplay to null.
@@ -358,9 +359,9 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
           });
         }
       } else {
-        $scope.trips = "nothing";
         console.log("NO TAXI");
         console.log(response);
+        $scope.trips = "nothing";
       }
     });
   }
