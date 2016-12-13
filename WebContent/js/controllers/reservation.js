@@ -295,6 +295,7 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
       TotalDuration: {},
       Segments: []
     };
+
     $scope.directionsService.route(directionsServiceRequest, function (response, status) {
       if (status == google.maps.DirectionsStatus.OK){
         $scope.directionsDisplay.setDirections(response);
@@ -344,7 +345,7 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
                 departureCity: $scope.departure,
                 arrivalCity: $scope.arrival,
                 date: $scope.picker.date.getDate() + "/" + ($scope.picker.date.getMonth()+1) + "/" + $scope.picker.date.getFullYear() + " à " +  $scope.picker.date.getHours() + ":"+  $scope.picker.date.getMinutes() + ":"+  $scope.picker.date.getSeconds(),
-                price: 2*$scope.directions.TotalDistance
+                price: 0.80*$scope.directions.TotalDistance
               }];
             }
             else{
@@ -357,6 +358,10 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
           });
         }
       }
+    }, function (response, status) {
+      $scope.trips = "nothing";
+      console.log("NO TAXI");
+      console.log(response);
     });
   }
 
