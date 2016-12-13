@@ -67,7 +67,7 @@ ecom_app.factory('location', [
   }
 ]);
 
-ecom_app.controller("controllerReservation", function ($scope, $http, location, uiGmapIsReady, uiGmapGoogleMapApi, $mdDialog) {
+ecom_app.controller("controllerReservation", function ($scope, $http, location, uiGmapIsReady, uiGmapGoogleMapApi, $mdDialog, growl) {
   $scope.reservation();
 
   // instantiate google map objects for directions
@@ -117,12 +117,15 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
           }
         }).then(function successCallback(response) {
           if(response.data.taxiPresent){
+            growl.success("La réservation du covoiturage a été effectuée avec succès.",{title: 'Succès !', ttl: 3000});
             $mdDialog.hide();
           }
           else{
+            growl.error("La réservation du covoiturage n'a pas été effectuée.",{title: 'Error !', ttl: 3000});
             console.log("NO CARPOOLING RESERVATION");
           }
         }, function errorCallback(response) {
+          growl.error("La réservation du covoiturage n'a pas été effectuée.",{title: 'Error !', ttl: 3000});
           console.log("NO CARPOOLING RESERVATION");
           console.log(response);
         });
@@ -160,12 +163,15 @@ ecom_app.controller("controllerReservation", function ($scope, $http, location, 
               }
             }).then(function successCallback(response) {
               if(response.data.taxiPresent){
+                growl.success("La réservation du taxi a été effectuée avec succès.",{title: 'Succès !', ttl: 3000});
                 $mdDialog.hide();
               }
               else{
+                growl.error("La réservation du taxi n'a pas été effectuée.",{title: 'Erreur !', ttl: 3000});
                 console.log("NO TAXI RESERVATION");
               }
             }, function errorCallback(response) {
+              growl.error("La réservation du taxi n'a pas été effectuée.",{title: 'Erreur !', ttl: 3000});
               console.log("NO TAXI RESERVATION");
               console.log(response);
             });

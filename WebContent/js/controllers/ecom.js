@@ -77,12 +77,12 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
         $scope.connectionInfo.connected = true;
         $scope.connectionInfo.firstname = firstname;
         $scope.connectionInfo.lastname = lastname;
-        growl.success("Le compte a été créé.",{title: 'Succès !', ttl: 2000});
+        growl.success("Le compte a été créé.",{title: 'Succès !', ttl: 3000});
         $mdDialog.hide();
       }, function errorCallback(response) {
         console.log("NO NEW ACCOUNT");
         console.log(response);
-        growl.error("Le compte n'a pas été créé.",{title: 'Erreur !', ttl: 2000});
+        growl.error("Le compte n'a pas été créé.",{title: 'Erreur !', ttl: 3000});
       });
     };
   }
@@ -111,12 +111,12 @@ ecom_app.controller("controllerEcom", function ($scope, $http, $location, $mdDia
         $scope.connectionInfo.connected = true;
         $scope.connectionInfo.firstname = response.data.firstName;
         $scope.connectionInfo.lastname = response.data.lastName;
-        growl.success("Vous êtes connecté.",{title: 'Succès !', ttl: 2000});
+        growl.success("Vous êtes connecté.",{title: 'Succès !', ttl: 3000});
         $mdDialog.hide();
       }, function errorCallback(response) {
         console.log("NOT CONNECTED");
         console.log(response);
-        growl.error("Mauvais mail ou mot de passe.",{title: 'Erreur !', ttl: 2000});
+        growl.error("Mauvais mail ou mot de passe.",{title: 'Erreur !', ttl: 3000});
       });
     };
   }
