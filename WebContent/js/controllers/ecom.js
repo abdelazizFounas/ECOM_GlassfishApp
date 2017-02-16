@@ -1,5 +1,5 @@
 /*
- * Ecom
+ * Ecome
  */
 
 ecom_app = angular.module('ecomapp', ['ngRoute','uiGmapgoogle-maps','ui.bootstrap','ui.bootstrap.datetimepicker','ngMaterial', 'angular-growl']);
